@@ -3,5 +3,9 @@
   "to-second-page": "To second page",
   "error-with-status": "A {{statusCode}} error occurred on server",
   "error-without-status": "An error occurred on the server",
-  "title": "Home | SCC"
+  "title": "Home | SCC",
+  "aboutMenu": "About",
+  "classesMenu": "Classes",
+  "pricingMenu": "Pricing",
+  "blogMenu": "Blog"
 }
