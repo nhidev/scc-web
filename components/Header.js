@@ -1,29 +1,281 @@
-import Head from 'next/head'
+import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import styled from "styled-components";
 
-export const Header = ({ heading, title }) => (
-  <>
-    <Head>
-      <title>{title}</title>
+import { Grid, Row, Col } from "react-styled-flexboxgrid";
 
-      <link href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css' rel='stylesheet' />
-      <link href='/app.css' rel='stylesheet' />
+const HeaderStyled = styled.header`
+  background-color: #fff;
+  position: fixed;
+  height: 6rem;
+  width: 100%;
+  z-index: 3;
+  .site-header {
+    display: flex;
+    justify-content: space-between;
+  }
+  .site-logo {
+    display: block;
+    height: 5rem;
+    margin-right: auto;
+    img {
+      object-fit: contain;
+      height: 100%;
+      object-fit: contain;
+      width: auto;
+    }
+  }
+  .menu-area {
+    margin-left: auto;
+  }
+  .main-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    background-color: #fff;
+    position: absolute;
+    top: 5rem;
+    left: 0;
+    list-style: none;
+    overflow: hidden;
+    width: auto;
+    transition: all 0.3s ease-out;
+    clear: both;
+    max-height: 0;
+    transition: max-height 0.2s ease-out;
+    padding: 0 2.4rem;
+    z-index: 1000;
+    li {
+      float: left;
+      min-width: 9rem;
+      transition: background-position-x 0.9s linear;
+      width: 100%;
+      display: block;
 
-      <link href='https://cdnjs.cloudflare.com/ajax/libs/typicons/2.0.9/typicons.min.css' rel='stylesheet' />
-      <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400|Oswald:600' rel='stylesheet' />
-      <link data-react-helmet='true' rel='icon' href='https://blobscdn.gitbook.com/v0/b/gitbook-28427.appspot.com/o/spaces%2F-L9iS6Wm2hynS5H9Gj7j%2Favatar.png?generation=1523462254548780&amp;alt=media' />
-    </Head>
-    <h2>
-      next-i18next
-      <hr />
-    </h2>
-    <h1>
-      {heading}
-    </h1>
-    <a
-      className='github'
-      href='//github.com/isaachinman/next-i18next'
-    >
-      <i className='typcn typcn-social-github-circular' />
-    </a>
-  </>
-)
+      a {
+        display: block;
+        padding: 2rem 0 1rem;
+        text-decoration: none;
+        transition: all 0.45s;
+        text-align: left;
+      }
+
+     
+      &:hover a {
+        color: rgb(237 72 21);
+      }
+
+      &:not(:last-child) {
+        margin-right: 2rem;
+      }
+    }
+    @keyframes line {
+      0% {
+        background-position-x: 39rem;
+      }
+    }
+  }
+
+  /* menu icon */
+  .menu-icon {
+    cursor: pointer;
+    display: inline-block;
+    padding: 2.8rem 2rem;
+    position: relative;
+    user-select: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    .navicon {
+      background: #333;
+      display: block;
+      height: 0.2rem;
+      position: relative;
+      transition: background 0.2s ease-out;
+      width: 1.8rem;
+    }
+
+    .navicon:before,
+    .navicon:after {
+      background: #333;
+      content: "";
+      display: block;
+      height: 100%;
+      position: absolute;
+      transition: all 0.2s ease-out;
+      width: 100%;
+    }
+
+    .navicon:before {
+      top: 0.5rem;
+    }
+
+    .navicon:after {
+      top: -0.5rem;
+    }
+  }
+
+
+
+  /* menu btn */
+
+  .menu-btn {
+    display: none;
+    &:checked ~ .main-menu {
+      max-height: 24rem;
+    }
+    &:checked ~ .menu-icon .navicon {
+      background: transparent;
+    }
+
+    &:checked ~ .menu-icon .navicon:before {
+      transform: rotate(-45deg);
+    }
+
+    &:checked ~ .menu-icon .navicon:after {
+      transform: rotate(45deg);
+    }
+
+    &:checked ~ .menu-icon:not(.steps) .navicon:before,
+    &:checked ~ .menu-icon:not(.steps) .navicon:after {
+      top: 0;
+    }
+  }
+
+  
+
+
+  .language-wrap {
+    display: flex;
+    width: 100%;
+    button {
+      background: transparent;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      width: 3.5rem;
+      height: 3.5rem;
+      &:first-child {
+        background: url('/en.png') no-repeat center;
+      }
+      &:last-child {
+        background: url('/vn.png') no-repeat center;
+      }
+    }
+  }
+
+
+  @media (min-width: 768px) {
+    height: 8rem;
+    .site-logo {
+      height: 8rem;
+    }
+    .main-menu {
+      flex-direction: row;
+      clear: none;
+      max-height: none;
+      height: 8rem;
+      position: relative;
+      top: 0;
+      padding: 0;
+      
+      li {
+        width: auto;
+        a {
+          font-size: 2rem;
+          text-align: center;
+        }
+        &:hover {
+          background: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2ZXJzaW9uPSIxLjEi%0D%0AIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhs%0D%0AaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0%0D%0AaD0iMzkwcHgiIGhlaWdodD0iNTBweCIgdmlld0JveD0iMCAwIDM5MCA1MCIgZW5hYmxlLWJhY2tn%0D%0Acm91bmQ9Im5ldyAwIDAgMzkwIDUwIiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHBhdGggZmlsbD0i%0D%0Abm9uZSIgc3Ryb2tlPSIjZDk0ZjVjIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLW1pdGVybGlt%0D%0AaXQ9IjEwIiBkPSJNMCw0Ny41ODVjMCwwLDk3LjUsMCwxMzAsMAoJYzEzLjc1LDAsMjguNzQtMzgu%0D%0ANzc4LDQ2LjE2OC0xOS40MTZDMTkyLjY2OSw0Ni41LDI0My42MDMsNDcuNTg1LDI2MCw0Ny41ODVj%0D%0AMzEuODIxLDAsMTMwLDAsMTMwLDAiLz4KPC9zdmc+Cg==");
+          animation: line 1s;
+        }
+      }
+    }
+    .menu-icon {
+      display: none;
+    }
+    .language-wrap {
+      width: auto;
+      }
+  }
+`;
+
+const Header = () => {
+  const { t } = useTranslation("common");
+  const router = useRouter();
+
+  const buttons = [
+    { path: "/about", text: "aboutMenu" },
+    { path: "/class", text: "classesMenu" },
+    { path: "/pricing", text: "pricingMenu" },
+    { path: "/blog", text: "blogMenu" },
+  ];
+
+  const { locale } = router;
+
+  const changeLanguage = (e) => {
+    const locale = e.target.value;
+    router.push(router.pathname, router.asPath, { locale });
+  };
+
+  return (
+    <HeaderStyled>
+      <Grid>
+        <Row>
+          <Col className="site-header" xs={12}>
+            <Link href="/">
+              <a className="site-logo">
+                <img
+                  src="/logo_scc_white-bg.png"
+                  alt="saigon climbibg center"
+                />
+              </a>
+            </Link>
+            <div className="menu-area">
+              <input className="menu-btn" type="checkbox" id="menu-btn" />
+              <label className="menu-icon" htmlFor="menu-btn">
+                <span className="navicon"></span>
+              </label>
+              <nav className="main-menu">
+                <ul>
+                  {buttons.map((button) => (
+                    <Link key={button.text} href={button.path}>
+                      <li>
+                        <a className={router === button.path ? "active" : ""}>
+                          {t(button.text)}
+                        </a>
+                      </li>
+                    </Link>
+                  ))}
+                </ul>
+                <div className="language-wrap">
+                  <button
+                    onClick={changeLanguage}
+                    defaultValue={locale}
+                    value="en"
+                  >
+                    {/* <img src="/en.png" alt="english"/> */}
+                  </button>
+                  <button
+                    onClick={changeLanguage}
+                    defaultValue={locale}
+                    value="vn"
+                  >
+                    {/* <img src="/vn.png" alt="vietnamese"/> */}
+                  </button>
+                </div>
+              </nav>
+            </div>
+          </Col>
+        </Row>
+      </Grid>
+    </HeaderStyled>
+  );
+};
+
+
+export default Header;

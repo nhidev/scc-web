@@ -2,5 +2,9 @@
   "h1": "Ví dụ đơn giản để minh họa",
   "error-with-status": "Có lỗi trên máy chủ ({{statusCode}})",
   "error-without-status": "Đã xảy ra lỗi trên máy chủ",
-  "title": "Trang chủ | SCC"
+  "title": "Trang chủ | SCC",
+  "aboutMenu": "Về SCC",
+  "classesMenu": "Lớp học",
+  "pricingMenu": "Bảng giá",
+  "blogMenu": "Tin tức"
 }
